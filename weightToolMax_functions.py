@@ -5,7 +5,6 @@ import maya.cmds as cmds
 import maya.mel as mel
 from maya.api.OpenMaya import MMatrix
 
-print("hotkey test")
 def importLibs():
     import maya.cmds as cmds
     import maya.mel as mel
@@ -74,7 +73,6 @@ def pickWeight(sel, influence):
     skinCluster = (cmds.ls(cmds.listHistory(shape) or [], type="skinCluster") or [None])[0]
     vertWeight = cmds.skinPercent(skinCluster, sourceVert, transform = influence, q = True)
     print(f"weight picked: {vertWeight}")
-   
     return vertWeight
 
 #set weight of an influence on selected verts
@@ -83,7 +81,6 @@ def setInfluenceWeight(sel, influence, weight, normalize = True):
     cmds.undoInfo(ock = True)
 
     mel.eval("PolySelectConvert 3;")
-
     targetVerts = cmds.ls(cmds.ls(sl=True), fl=True) or []
     if not targetVerts:
         cmds.error("select verts")
@@ -100,9 +97,7 @@ def setInfluenceWeight(sel, influence, weight, normalize = True):
     cmds.skinPercent(skinCluster, targetVerts,
                      transformValue=[(influence, float(weight))],
                      normalize=normalize)
-  
-    print(f"weights set on verts: {weight}")
-
+    
     cmds.undoInfo(cck = True)
 
 def scaleWeights(sel, influence, scaleVal, clamp=True):
@@ -154,11 +149,8 @@ def pasteWeights(copiedWeights, sel):
     mel.eval("PolySelectConvert 3;")
     verts = cmds.ls(sl=True, fl=True)
     targetVerts = verts[0:]
-    #targetVerts[0].split('.')[0]
-    print(f"copied weights = {copiedWeights}") 
     shape = cmds.listRelatives(targetVerts, p=True)[0]
     skinCluster = (cmds.ls(cmds.listHistory(shape) or [], type="skinCluster") or [None])[0]   
-    print(skinCluster)
     cmds.skinPercent(skinCluster, targetVerts, transformValue = copiedWeights)
     print("weights pasted")
 
@@ -167,7 +159,6 @@ def getCurrentInfluences(sel=None, threshold=0.0001):
     verts = cmds.ls(cmds.ls(sl=True), fl=True) or []
     if not verts:
         cmds.error("select verts")
-    
     mesh = verts[0].split('.')[0]
     shape = (cmds.listRelatives(mesh, s=True, ni=True, f=True) or [None])[0]
     skinCluster = (cmds.ls(cmds.listHistory(shape) or [], type="skinCluster") or [None])[0]
@@ -185,9 +176,6 @@ def getCurrentInfluences(sel=None, threshold=0.0001):
                     continue
                 else:
                     influenceList.append(joint)
-    
-    print(f"influence list = {influenceList}")
-
     return influenceList
 
 ########################### PAINT WEIGHT FUNCTIONS ################################
@@ -212,7 +200,6 @@ def updateViewport(influence):
      ctx = contextCheck() 
      currentInfluence = cmds.artAttrSkinPaintCtx(ctx, q=True, influence = True) 
      mel.eval(f' artAttrSkinToolScript 3; artSkinInflListChanging {currentInfluence} 0; artSkinInflListChanging "{influence}" 1; artSkinInflListChanged artAttrSkinPaintCtx; artAttrSkinPaintModePaintSelect 1 artAttrSkinPaintCtx;')
-     #print("viewport updated in func file")
 
 
 
