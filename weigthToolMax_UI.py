@@ -118,7 +118,7 @@ class weightTool_Max(QtWidgets.QWidget):
             self.copyBtnUI.clicked.connect(self.copyUI)
         if hasattr(self, "pasteBtnUI"):
             self.pasteBtnUI.clicked.connect(self.pasteUI)
-        # Initialize to full size of loaded UI
+        #init resize
         self.widget.resize(self.width(), self.height())
 
     ##################################### Weight Tool Functions ###########################################
