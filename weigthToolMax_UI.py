@@ -12,7 +12,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtUiTools import QUiLoader
 from shiboken2 import wrapInstance
  
-# path to functions
+#path to functions
 path = r"YOUR PATH HERE"
 if path not in sys.path:
     sys.path.append(path)
@@ -20,7 +20,7 @@ if path not in sys.path:
 from Functions import weightToolMax_functions as skin
 importlib.reload(skin)
 
-# import checks
+#improt checks
 skin.sanityCheck()
 
 class weightTool_Max(QtWidgets.QWidget):
@@ -30,19 +30,19 @@ class weightTool_Max(QtWidgets.QWidget):
         super(weightTool_Max, self).__init__(parent=parent)
         self.setWindowFlags(QtCore.Qt.Window)
 
-        # Load UI
+        #load ui
         self.widgetPath = rYOUR PATH TO WIDGET FOLDER"
         self.widget = QUiLoader().load(self.widgetPath + r"/weightToolMax_UI.ui")
         self.widget.setParent(self)
 
-        # window sizing
+        #window sizing
         self.setMinimumWidth(222)
         self.setMaximumWidth(222)
         self.setMaximumHeight(400)
         self.setMinimumHeight(400)
         self.resize(222, 400)
 
-        # ---------- BULK WIDGET LOOKUP + AUTOBIND ----------
+        #connect widgets
         widgetTypes = (
             QtWidgets.QPushButton,
             QtWidgets.QLineEdit,
@@ -70,13 +70,13 @@ class weightTool_Max(QtWidgets.QWidget):
         self.pickWeight = []
 
 
-        # Normalize / Prune
+        #normalize and prune
         if hasattr(self, "normalizeBtnUI"):
             self.normalizeBtnUI.clicked.connect(self.normalizeWeightsUI)
         if hasattr(self, "pruneBtnUI"):
             self.pruneBtnUI.clicked.connect(self.pruneWeightsUI)
 
-        # Influence list & viewport
+        #inf list and viewport update
         if hasattr(self, "grabVertexBtnUI"):
             self.grabVertexBtnUI.clicked.connect(self.updateInfluenceListUI)
         if hasattr(self, "currentInfListUI"):
@@ -84,7 +84,7 @@ class weightTool_Max(QtWidgets.QWidget):
         if hasattr(self, "clearListBtnUI"):
             self.clearListBtnUI.clicked.connect(self.clearInfluenceListUI)
 
-        # 3DS Max-style quick weights
+        #3ds max style quick weights
         if hasattr(self, "val0BtnUI"):
             self.val0BtnUI.clicked.connect(partial(self.setInfluenceWeightUI, 0.0))
         if hasattr(self, "val10BtnUI"):
@@ -101,7 +101,7 @@ class weightTool_Max(QtWidgets.QWidget):
             self.val100BtnUI.clicked.connect(partial(self.setInfluenceWeightUI, 1.0))
 
             
-        # Custom set / scale
+        #custom set/scale
         if hasattr(self, "setWeightBtnUI"):
             self.setWeightBtnUI.clicked.connect(self.setCustomWeightUI)
         if hasattr(self, "scaleWeightBtnUI"):
@@ -121,9 +121,7 @@ class weightTool_Max(QtWidgets.QWidget):
         # Initialize to full size of loaded UI
         self.widget.resize(self.width(), self.height())
 
-    # =============================
-    # Weight Tool Functions
-    # =============================
+    ##################################### Weight Tool Functions ###########################################
 
     def copyUI(self):
         selection = cmds.ls(sl=True)
@@ -134,7 +132,7 @@ class weightTool_Max(QtWidgets.QWidget):
         skin.pasteWeights(self.copiedWeights, selection)
 
 
-    # Normalize / Prune
+    #normalize and prune
     def normalizeWeightsUI(self):
         selection = cmds.ls(sl=True, type="transform")
         skin.normalizeWeights(selection)
@@ -144,7 +142,7 @@ class weightTool_Max(QtWidgets.QWidget):
         tolerance = self.pruneSpinUI.value() if hasattr(self, "pruneSpinUI") else 0.01
         skin.pruneWeights(selection, tolerance)
 
-    # 3DS Max style hotkeys
+    #3ds max style hotkeys
     def setInfluenceWeightUI(self, weight):
         selection = cmds.ls(sl=True, fl=True)
         influences = self.getListedInfluences()
@@ -165,7 +163,7 @@ class weightTool_Max(QtWidgets.QWidget):
             scaleVal = self.scaleWgtSpinUI.value() if hasattr(self, "scaleWgtSpinUI") else 1.0
             skin.scaleWeights(selection, influences, scaleVal, clamp=True)
 
-    # Paint Weight Settings
+    ##################################### Paint Weight Stuff ###########################################
     def scaleSelectionUI(self, operation):
         skin.scaleSelection(operation)
 
@@ -193,7 +191,6 @@ class weightTool_Max(QtWidgets.QWidget):
         if hasattr(self, "brushIntensitySpin"):
             self.brushIntensitySpin.setValue(intensity)
 
-    # Influence List helpers
     def clearInfluenceListUI(self):
         if hasattr(self, "currentInfListUI"):
             self.currentInfListUI.clear()
@@ -218,9 +215,8 @@ class weightTool_Max(QtWidgets.QWidget):
     def scaleSelectionUI(self, operation):
         skin.scaleSelection(operation)
         
-    # =============================
-    # Qt stuff
-    # =============================
+    ##################################### QT stuff ###########################################
+
     def resizeEvent(self, event):
         self.widget.resize(self.width(), self.height())
 
